@@ -18,7 +18,8 @@ public:
 
     void deleteText(int count) {
         if (count > text.size()) {
-            cout << "Cannot delete more characters than present.\n";
+            cout << "Cannot d
+            elete more characters than present.\n";
             return;
         }
         history.push(text);
