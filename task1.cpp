@@ -6,30 +6,32 @@ using namespace std;
 
 class TextEditor {
 private:
-    string text;
-    stack<string> history;
+    string text; // Holds the current text
+    stack<string> history; // Holds the history for undo operations
 
 public:
+    // Add new text to the editor
     void addText(const string& newText) {
-        history.push(text);
+        history.push(text); // Save current state to history
         text += newText;
         cout << "Added text: \"" << newText << "\"\n";
     }
 
+    // Delete the last 'count' characters
     void deleteText(int count) {
         if (count > text.size()) {
-            cout << "Cannot d
-            elete more characters than present.\n";
+            cout << "Cannot delete more characters than present.\n";
             return;
         }
-        history.push(text);
+        history.push(text); // Save current state to history
         text.erase(text.size() - count);
         cout << "Deleted last " << count << " characters\n";
     }
 
+    // Undo the last operation
     void undo() {
         if (!history.empty()) {
-            text = history.top();
+            text = history.top(); // Revert to the last saved state
             history.pop();
             cout << "Undo performed. Current text: \"" << text << "\"\n";
         } else {
@@ -37,6 +39,7 @@ public:
         }
     }
 
+    // Display the current text
     void displayText() const {
         cout << "Current text: \"" << text << "\"\n";
     }
