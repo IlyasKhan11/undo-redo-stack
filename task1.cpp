@@ -2,46 +2,52 @@
 #include <stack>
 #include <string>
 
-using namespace std;
-
 class TextEditor {
 private:
-    string text; // Holds the current text
-    stack<string> history; // Holds the history for undo operations
+    std::string text; // Holds the current text
+    std::stack<std::string> history; // Tracks states for undo operations
 
 public:
-    // Add new text to the editor
-    void addText(const string& newText) {
-        history.push(text); // Save current state to history
-        text += newText;
-        cout << "Added text: \"" << newText << "\"\n";
-    }
-
-    // Delete the last 'count' characters
-    void deleteText(int count) {
-        if (count > text.size()) {
-            cout << "Cannot delete more characters than present.\n";
+    // Add new text to the editor if it's non-empty
+    void addText(const std::string& newText) {
+        if (newText.empty()) {
+            std::cout << "No text to add.\n";
             return;
         }
-        history.push(text); // Save current state to history
-        text.erase(text.size() - count);
-        cout << "Deleted last " << count << " characters\n";
+        history.push(text);
+        text += newText;
+        std::cout << "Added text: \"" << newText << "\"\n";
     }
 
-    // Undo the last operation
+    // Delete the last 'count' characters if valid
+    void deleteText(int count) {
+        if (count <= 0) {
+            std::cout << "Invalid count. Count must be positive.\n";
+            return;
+        }
+        if (count > text.size()) {
+            std::cout << "Cannot delete more characters than present.\n";
+            return;
+        }
+        history.push(text);
+        text.erase(text.size() - count);
+        std::cout << "Deleted last " << count << " characters\n";
+    }
+
+    // Revert to the previous state if possible
     void undo() {
         if (!history.empty()) {
-            text = history.top(); // Revert to the last saved state
+            text = history.top();
             history.pop();
-            cout << "Undo performed. Current text: \"" << text << "\"\n";
+            std::cout << "Undo performed. Current text: \"" << text << "\"\n";
         } else {
-            cout << "No operations to undo.\n";
+            std::cout << "No operations to undo.\n";
         }
     }
 
     // Display the current text
     void displayText() const {
-        cout << "Current text: \"" << text << "\"\n";
+        std::cout << "Current text: \"" << text << "\"\n";
     }
 };
 
@@ -64,6 +70,12 @@ int main() {
     editor.displayText();
 
     editor.undo();
+    editor.displayText();
+
+    // Additional test cases
+    editor.addText(""); // Test adding empty text
+    editor.deleteText(-3); // Test invalid negative count
+    editor.deleteText(3); // Test valid deletion
     editor.displayText();
 
     return 0;
