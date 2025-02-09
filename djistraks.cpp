@@ -1,23 +1,25 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-typedef pair<int, int> pii;
+using pii = pair<int, int>;
+using Graph = vector<vector<pii>>;
 
-vector<int> dijkstra(int n, vector<vector<pii>> &adj, int start) {
-    vector<int> dist(n, INT_MAX);
+constexpr int INF = INT_MAX;
+
+vector<int> dijkstra(int n, const Graph &adj, int start) {
+    vector<int> dist(n, INF);
     priority_queue<pii, vector<pii>, greater<pii>> pq;
 
     dist[start] = 0;
     pq.push({0, start});
 
     while (!pq.empty()) {
-        int d = pq.top().first;
-        int u = pq.top().second;
+        auto [d, u] = pq.top();
         pq.pop();
 
-        if (d > dist[u]) continue;
+        if (d > dist[u]) continue; // No need to process outdated distances
 
-        for (auto &[v, w] : adj[u]) {
+        for (const auto &[v, w] : adj[u]) {
             if (dist[u] + w < dist[v]) {
                 dist[v] = dist[u] + w;
                 pq.push({dist[v], v});
@@ -25,30 +27,26 @@ vector<int> dijkstra(int n, vector<vector<pii>> &adj, int start) {
         }
     }
 
-    return dist;
+    return move(dist);
 }
 
 int main() {
     int n = 5; // Number of nodes
-    vector<vector<pii>> adj(n);
+    Graph adj(n);
 
     // Adding edges (u, v, w)
-    adj[0].push_back({1, 10});
-    adj[0].push_back({2, 3});
-    adj[1].push_back({2, 1});
-    adj[1].push_back({3, 2});
-    adj[2].push_back({1, 4});
-    adj[2].push_back({3, 8});
-    adj[2].push_back({4, 2});
-    adj[3].push_back({4, 7});
-    adj[4].push_back({3, 9});
+    adj[0] = {{1, 10}, {2, 3}};
+    adj[1] = {{2, 1}, {3, 2}};
+    adj[2] = {{1, 4}, {3, 8}, {4, 2}};
+    adj[3] = {{4, 7}};
+    adj[4] = {{3, 9}};
 
     int start = 0;
     vector<int> distances = dijkstra(n, adj, start);
 
     cout << "Shortest distances from node " << start << ":\n";
     for (int i = 0; i < n; i++) {
-        cout << "To " << i << " : " << distances[i] << "\n";
+        cout << "To " << i << " : " << (distances[i] == INF ? -1 : distances[i]) << "\n";
     }
 
     return 0;
